@@ -1,0 +1,69 @@
+{% extends 'movies/base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 bg-white p-4 rounded shadow-sm">
+        <h2 class="mb-4 text-center">Регистрация</h2>
+        <div id="js-error" class="alert alert-danger d-none"></div>
+        <form method="POST" id="regForm">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Имя пользователя</label>
+                <input type="text" name="username" id="username" class="form-content form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="text" name="email" id="email" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Пароль</label>
+                <input type="password" name="password" id="password" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Подтверждение пароля</label>
+                <input type="password" name="password_confirm" id="password_confirm" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-success w-100">Зарегистрироваться</button>
+        </form>
+    </div>
+</div>
+<script>
+document.getElementById('regForm').addEventListener('submit', function(e) {
+    const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const passwordConfirm = document.getElementById('password_confirm').value;
+    const errorDiv = document.getElementById('js-error');
+
+    errorDiv.classList.add('d-none');
+    errorDiv.innerText = '';
+
+    if (!username || !email || !password || !passwordConfirm) {
+        e.preventDefault();
+        errorDiv.innerText = 'Все поля обязательны для заполнения.';
+        errorDiv.classList.remove('d-none');
+        return;
+    }
+
+    if (!email.includes('@')) {
+        e.preventDefault();
+        errorDiv.innerText = 'Email должен содержать символ "@".';
+        errorDiv.classList.remove('d-none');
+        return;
+    }
+
+    if (password.length < 6) {
+        e.preventDefault();
+        errorDiv.innerText = 'Минимальная длина пароля — 6 символов.';
+        errorDiv.classList.remove('d-none');
+        return;
+    }
+
+    if (password !== passwordConfirm) {
+        e.preventDefault();
+        errorDiv.innerText = 'Пароли не совпадают.';
+        errorDiv.classList.remove('d-none');
+        return;
+    }
+});
+</script>
+{% endblock %}
